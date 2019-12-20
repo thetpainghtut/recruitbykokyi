@@ -1,7 +1,7 @@
 <template>
-    <nav class="navbar bg-dark mb-5">
+    <nav class="navbar bg-dark">
         <a class="navbar-brand" href="#">
-          <img src="@/assets/logo.jpg" height="40" alt="">
+          <img src="@/assets/logo.jpg" height="30" alt="">
         </a>
         <button class="btn btn-primary btn-sm mr-2" @click="logout">Logout</button>
       </nav>
@@ -23,3 +23,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+  .navbar {
+    min-height: 50px;
+  }
+</style>

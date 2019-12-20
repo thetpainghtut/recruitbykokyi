@@ -1,5 +1,5 @@
 <template>
-    <div id="township">
+    <div id="job">
         <div class="container-fluid">
             <div v-if="status=='loading'" class="pt-3 text-center">
                 <div class="spinner-border" role="status">
@@ -9,13 +9,13 @@
             <div v-else-if="status == 'success'">
                 <div class="row">
                     <div class="col-12">
-                        <button class="btn btn-info btn-sm mt-2 ml-2" @click="new_township = !new_township">
-                            <span v-if="new_township">Cancel</span>
+                        <button class="btn btn-info btn-sm mt-2 ml-2" @click="new_job = !new_job">
+                            <span v-if="new_job">Cancel</span>
                             <span v-else>Add New</span>
                         </button>
                     </div>
-                    <div v-if="new_township" class="col-md-6 bg-light m-4">
-                        <add-township></add-township>
+                    <div v-if="new_job" class="col-md-6 bg-light m-4">
+                        <add-job :townships="townships"></add-job>
                     </div>
                 </div>
                 <div class="row p-3">
@@ -29,17 +29,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(township, index) in townships.data" :key="township.key">
+                                <tr v-for="(job, index) in jobs.data" :key="job.key">
                                     <td>{{index+1}}</td>
-                                    <td>{{township.name}}</td>
+                                    <td>{{job.title}}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-warning mx-2" @click="editTownship(township)">Edit</button>
-                                        <button class="btn btn-danger btn-sm" @click="deleteTownship(township)">Delete</button>
+                                        <button class="btn btn-sm btn-warning mx-2" @click="editJob(job)">Edit</button>
+                                        <button class="btn btn-danger btn-sm" @click="deleteJob(job)">Delete</button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                        <pagination :data="townships" @pagination-change-page="getTownships"></pagination>
+                        <pagination :data="jobs" @pagination-change-page="getJobs"></pagination>
                     </div>
                 </div>
             </div>
@@ -49,19 +49,19 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Edit Township</h5>
+                <h5 class="modal-title">Edit Job</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
                 <div class="form-group">
-                    <label>Township Name</label>
-                    <input type="text" class="form-control form-control-sm" v-model="current_township.name">
+                    <label>Job Name</label>
+                    <input type="text" class="form-control form-control-sm" v-model="current_job.title">
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary btn-sm" @click="updateTownship">Update</button>
+                <button type="button" class="btn btn-primary btn-sm" @click="updateJob">Update</button>
               </div>
             </div>
           </div>
@@ -69,23 +69,27 @@
     </div>
 </template>
 <script>
-import AddTownship from './AddTownship';
+import AddJob from './AddJob';
 
 export default {
     components: {
-        AddTownship
+        AddJob
     },
 
     data(){
         return {
-            new_township: false,
-            current_township: {}
+            new_job: false,
+            current_job: {}
         }
     },
     
     computed: {
         status(){
-            return this.$store.getters['townships/township_status']
+            return this.$store.getters['jobs/job_status']
+        },
+
+        jobs(){
+            return this.$store.getters['jobs/getJobs'];
         },
 
         townships(){
@@ -94,6 +98,7 @@ export default {
     },
 
     created(){
+        this.getJobs();
         this.getTownships();
     },
 
@@ -102,18 +107,22 @@ export default {
             this.$store.dispatch('townships/getTownships', page);
         },
 
-        editTownship(township){
-            this.current_township = Object.assign({}, this.current_township, township);
+        getJobs(page = 1){
+            this.$store.dispatch('jobs/getJobs', page);
+        },
+
+        editJob(job){
+            this.current_job = Object.assign({}, this.current_job, job);
             $('#edit_modal').modal('show');
         },
 
-        updateTownship(){
-            this.$store.dispatch('townships/updateTownship', this.current_township)
+        updateJob(){
+            this.$store.dispatch('jobs/updateJob', this.current_job)
             .then(() => $('#edit_modal').modal('hide'));
         },
 
-        deleteTownship(township){
-            this.$store.dispatch('townships/deleteTownship', township);
+        deleteJob(job){
+            this.$store.dispatch('jobs/deleteJob', job);
         }
     }
 }

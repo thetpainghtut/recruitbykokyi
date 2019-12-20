@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import auth from './modules/auth'
 import townships from './modules/townships'
+import companies from './modules/companies'
+import jobs from './modules/jobs'
 
 Vue.use(Vuex)
 
@@ -21,6 +23,6 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    auth, townships
+    auth, townships, companies, jobs
   }
 })

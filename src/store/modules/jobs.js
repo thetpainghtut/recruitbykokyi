@@ -3,31 +3,31 @@ export default {
 
     state: {
         status: '',
-        townships: [],
+        jobs: [],
     },
 
     getters: {
-        getTownships: state => state.townships,
+        getJobs: state => state.jobs,
 
-        township_status: state => state.status
+        job_status: state => state.status
     },
 
     mutations: {
-        township_request: state => state.status = 'loading',
+        job_request: state => state.status = 'loading',
 
         success_request: (state, data) => {
             state.status = 'success';
-            state.townships = data;
+            state.jobs = data;
         },
 
         failed_request: state => state.status = 'Failed to load data. Something is wrong!',
     },
 
     actions: {
-        getTownships(state, page = 1){
+        getJobs(state, page = 1){
             return new Promise((resolve, reject) => {
-                state.commit('township_request');
-                this._vm.$http.get(api.townships_URL + '?page=' + page)
+                state.commit('job_request');
+                this._vm.$http.get(api.jobs_URL + '?page=' + page)
                 .then(response => {
                     state.commit('success_request', response.data);
                     resolve();
@@ -39,12 +39,27 @@ export default {
             });
         },
 
-        addTownship(state, data){
-            return new Promise((resolve, reject) =>{
-                state.commit('township_request');
-                this._vm.$http.post(api.townships_URL, data)
+        getAllJobs(state){
+            return new Promise((resolve, reject) => {
+                state.commit('job_request');
+                this._vm.$http.get(api.all_jobs_URL)
                 .then(response => {
-                    state.dispatch('getTownships');
+                    state.commit('success_request', response.data);
+                    resolve();
+                })
+                .catch(error => {
+                    state.commit('failed_request');
+                    reject(error);
+                });
+            });
+        },
+
+        addJob(state, data){
+            return new Promise((resolve, reject) =>{
+                state.commit('job_request');
+                this._vm.$http.post(api.jobs_URL, data)
+                .then(response => {
+                    state.dispatch('getJobs');
                     resolve(response);
                 })
                 .catch(error => {
@@ -54,12 +69,12 @@ export default {
             })
         },
 
-        updateTownship(state, data){
+        updateJob(state, data){
             return new Promise((resolve, reject) => {
-                state.commit('township_request');
-                this._vm.$http.put(api.townships_URL + data.id, data)
+                state.commit('job_request');
+                this._vm.$http.put(api.jobs_URL + data.id, data)
                 .then(response => {
-                    state.dispatch('getTownships');
+                    state.dispatch('getJobs');
                     resolve(response);
                 })
                 .catch(error => {
@@ -69,12 +84,12 @@ export default {
             });
         },
 
-        deleteTownship(state, data){
+        deleteJob(state, data){
             return new Promise((resolve, reject) => {
-                state.commit('township_request');
-                this._vm.$http.delete(api.townships_URL + data.id, data)
+                state.commit('job_request');
+                this._vm.$http.delete(api.jobs_URL + data.id, data)
                 .then(response => {
-                    state.dispatch('getTownships');
+                    state.dispatch('getJobs');
                     resolve(response);
                 })
                 .catch(error => {
