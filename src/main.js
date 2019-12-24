@@ -8,6 +8,9 @@ import vSelect from 'vue-select'
 Vue.component('v-select', vSelect)
 import 'vue-select/dist/vue-select.css'
 
+import Datepicker from 'vuejs-datepicker'
+Vue.component('date-picker', Datepicker);
+
 import 'bootstrap/dist/css/bootstrap.css'
 
 

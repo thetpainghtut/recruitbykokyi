@@ -89,11 +89,11 @@
                 </div>
                 <div class="form-group">
                     <label>Phone1</label>
-                    <input type="tel" class="form-control form-control-sm" v-model="current_company.phone1" pattern="[0-9]{2}-[0-9]{7,}" required>
+                    <input type="tel" class="form-control form-control-sm" v-model="current_company.phone1">
                 </div>
                 <div class="form-group">
                     <label>Phone2</label>
-                    <input type="tel" class="form-control form-control-sm" v-model="current_company.phone2" pattern="[0-9]{2}-[0-9]{7,}">
+                    <input type="tel" class="form-control form-control-sm" v-model="current_company.phone2">
                 </div>
                 <div class="form-group">
                     <label>Type</label>
