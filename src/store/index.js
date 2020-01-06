@@ -6,6 +6,7 @@ import townships from './modules/townships'
 import companies from './modules/companies'
 import jobs from './modules/jobs'
 import students from './modules/students'
+import interviews from './modules/interviews'
 
 Vue.use(Vuex)
 
@@ -24,6 +25,6 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    auth, townships, companies, jobs, students
+    auth, townships, companies, jobs, students, interviews
   }
 })

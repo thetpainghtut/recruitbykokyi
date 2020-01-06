@@ -3,12 +3,14 @@ export default {
 
     state: {
         status: '',
-        students: []
+        students: [],
+        students_by_job: []
     },
 
     getters: {
         student_status: state => state.status,
         getStudents: state => state.students,
+        getStudentsByJob: state => state.students_by_job
     },
 
     mutations: {
@@ -20,6 +22,10 @@ export default {
         failed:state => {
             state.status = 'failed';
             state.students = [];
+        },
+        students_by_job: (state, data) => {
+            state.status = 'success';
+            state.students_by_job = data;
         }
     },
 
@@ -36,6 +42,37 @@ export default {
                     state.commit('failed');
                     reject(error);
                 });
+            });
+        },
+
+        getAllStudents(state){
+            return new Promise((resolve, reject) => {
+                this._vm.$http.get(api.all_students_URL)
+                .then(response => {
+                    state.commit('success', response.data)
+                    resolve(response);
+                })
+                .catch(error => {
+                    state.commit('failed');
+                    reject(error);
+                })
+            });
+        },
+
+        getStudentsByJob(state, student_id){
+            if (!student_id) {
+                return;
+            }
+            return new Promise((resolve, reject) => {
+                this._vm.$http.get(api.students_by_job_URL + student_id)
+                .then(response => {
+                    state.commit('students_by_job', response.data);
+                    resolve(response);
+                })
+                .catch(error => {
+                    state.commit('failed');
+                    reject(error);
+                })
             });
         },
 

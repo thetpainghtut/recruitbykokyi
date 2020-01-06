@@ -15,6 +15,9 @@
         <li class="nav-item">
           <a class="nav-link" @click="active_tab = 4" :class="[ active_tab === 4 ? 'current' : '' ]">Students</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" @click="active_tab = 5" :class="[ active_tab === 5 ? 'current' : '' ]">Interviews</a>
+        </li>
       </ul>
       <div v-if="active_tab === 1">
         <township></township>
@@ -28,6 +31,9 @@
       <div v-if="active_tab === 4">
         <student></student>
       </div>
+      <div v-if="active_tab === 5">
+        <interview></interview>
+      </div>
     </div>
 </template>
 <script>
@@ -36,10 +42,11 @@ import Township from './township/Township';
 import Company from './company/Company';
 import Job from './job/Job';
 import Student from './student/Student';
+import Interview from './interview/Interview';
 
 export default {
   components: {
-    NavPart, Township, Company, Job, Student
+    NavPart, Township, Company, Job, Student, Interview
   },
 
   data() {

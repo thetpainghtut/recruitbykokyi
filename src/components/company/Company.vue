@@ -10,7 +10,7 @@
                 <div class="row">
                     <div class="col-12">
                         <button class="btn btn-info btn-sm mt-2 ml-2" @click="new_company = !new_company">
-                            <span v-if="new_company">Cancel</span>
+                            <span v-if="new_company">Done</span>
                             <span v-else>Add New</span>
                         </button>
                     </div>
@@ -142,7 +142,7 @@ export default {
         },
 
         townships(){
-            return this.$store.getters['townships/getTownships'];
+            return this.$store.getters['townships/townships'];
         },
     },
 

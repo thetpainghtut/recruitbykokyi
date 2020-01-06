@@ -206,7 +206,7 @@ export default {
         },
 
         townships(){
-            return this.$store.getters['townships/getTownships'];
+            return this.$store.getters['townships/townships'];
         },
 
         jobs(){
@@ -214,7 +214,10 @@ export default {
         },
 
         job_titles(){
-            return this.jobs.map((job) => job.title);
+            if (this.jobs) {
+                return this.jobs.map((job) => job.title);
+            }
+            return '';
         },
 
     },

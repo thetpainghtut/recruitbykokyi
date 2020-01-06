@@ -6,11 +6,11 @@
                     <span class="sr-only">Loading...</span>
                 </div>
             </div>
-            <div v-else-if="status == 'success'">
+            <div v-else>
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-12 text-center">
                         <button class="btn btn-info btn-sm mt-2 ml-2" @click="new_township = !new_township">
-                            <span v-if="new_township">Cancel</span>
+                            <span v-if="new_township">Done</span>
                             <span v-else>Add New</span>
                         </button>
                     </div>
@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="row p-3">
-                    <div class="col-md-6">
+                    <div class="col-md-6 mx-auto">
                         <table class="table table-striped table-sm">
                             <thead>
                                 <tr>
@@ -33,8 +33,8 @@
                                     <td>{{index+1}}</td>
                                     <td>{{township.name}}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-warning mx-2" @click="editTownship(township)">Edit</button>
-                                        <button class="btn btn-danger btn-sm" @click="deleteTownship(township)">Delete</button>
+                                        <button class="btn btn-sm btn-outline-warning mx-2" @click="editTownship(township)"><i class="far fa-edit fa-sm"></i></button>
+                                        <button class="btn btn-outline-danger btn-sm" @click="deleteTownship(township)"><i class="far fa-trash-alt fa-sm"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -43,7 +43,7 @@
                     </div>
                 </div>
             </div>
-            <div v-else class="text-center">{{status}}</div>
+            <!-- <div v-else class="text-center">{{status}}</div> -->
         </div>
         <div class="modal" id="edit_modal" tabindex="-1" role="dialog">
           <div class="modal-dialog" role="document">
@@ -89,7 +89,7 @@ export default {
         },
 
         townships(){
-            return this.$store.getters['townships/getTownships'];
+            return this.$store.getters['townships/townships'];
         }
     },
 

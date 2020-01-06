@@ -3,84 +3,84 @@ export default {
 
     state: {
         status: '',
-        townships: [],
+        error: '',
+        message: '',
+        townships: {},
     },
 
     getters: {
-        getTownships: state => state.townships,
+        townships: state => state.townships,
 
-        township_status: state => state.status
+        township_status: state => state.status,
+
+        township_error: state => state.error,
+
+        township_message: state => state.message
     },
 
     mutations: {
-        township_request: state => state.status = 'loading',
+        loading: state => state.status = 'loading',
 
-        success_request: (state, data) => {
+        success: (state, data) => {
             state.status = 'success';
             state.townships = data;
         },
 
-        failed_request: state => state.status = 'Failed to load data. Something is wrong!',
+        failed: (state, error) => {
+            state.status = 'error';
+            state.error = error;
+        },
+
+        setMessage: (state, message) => {
+            state.message = message;
+        },
+
+        clearError: state => {state.error = ''}
     },
 
     actions: {
         getTownships(state, page = 1){
-            return new Promise((resolve, reject) => {
-                state.commit('township_request');
-                this._vm.$http.get(api.townships_URL + '?page=' + page)
-                .then(response => {
-                    state.commit('success_request', response.data);
-                    resolve();
-                })
-                .catch(error => {
-                    state.commit('failed_request');
-                    reject(error);
-                });
+            state.commit('loading');
+            this._vm.$http.get(api.townships_URL + '?page=' + page)
+            .then(response => {
+                state.commit('success', response.data);
+            })
+            .catch(error => {
+                state.commit('failed', error);
             });
         },
 
         addTownship(state, data){
-            return new Promise((resolve, reject) =>{
-                state.commit('township_request');
-                this._vm.$http.post(api.townships_URL, data)
-                .then(response => {
-                    state.dispatch('getTownships');
-                    resolve(response);
-                })
-                .catch(error => {
-                    state.commit('failed_request');
-                    reject(error);
-                })
+            return this._vm.$http.post(api.townships_URL, data)
+            .then(response =>{
+                // state.commit('setMessage', response.data);
+                return true;
             })
+            .catch(error =>{
+                state.commit('setMessage', error.response.data.errors.name[0]);
+                return false;
+            });
         },
 
         updateTownship(state, data){
-            return new Promise((resolve, reject) => {
-                state.commit('township_request');
-                this._vm.$http.put(api.townships_URL + data.id, data)
-                .then(response => {
-                    state.dispatch('getTownships');
-                    resolve(response);
-                })
-                .catch(error => {
-                    state.commit('failed_request');
-                    reject(error);
-                });
+            state.commit('loading');
+            this._vm.$http.put(api.townships_URL + data.id, data)
+            .then(response => {
+                state.dispatch('getTownships');
+            })
+            .catch(error => {
+                state.commit('failed', error);
             });
         },
 
         deleteTownship(state, data){
-            return new Promise((resolve, reject) => {
-                state.commit('township_request');
-                this._vm.$http.delete(api.townships_URL + data.id, data)
-                .then(response => {
-                    state.dispatch('getTownships');
-                    resolve(response);
-                })
-                .catch(error => {
-                    state.commit('failed_request');
-                    reject(error);
-                });
+            state.commit('loading');
+            this._vm.$http.delete(api.townships_URL + data.id, data)
+            .then(response => {
+                state.dispatch('getTownships');
+            })
+            .catch(error => {
+                state.commit('failed', error);
             });
         }
     }

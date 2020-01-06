@@ -41,6 +41,21 @@ export default {
             });
         },
 
+        getAllCompanies(state){
+            return new Promise((resolve, reject) => {
+                state.commit('loading');
+                this._vm.$http.get(api.all_companies_URL)
+                .then(response => {
+                    state.commit('success', response.data);
+                    resolve(response);
+                })
+                .catch(error => {
+                    state.commit('failed');
+                    reject(error);
+                })
+            });
+        },
+
         addCompany(state, data){
             return new Promise((resolve, reject) => {
                 state.commit('loading');

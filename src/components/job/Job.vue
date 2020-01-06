@@ -93,7 +93,7 @@ export default {
         },
 
         townships(){
-            return this.$store.getters['townships/getTownships'];
+            return this.$store.getters['townships/townships'];
         }
     },
 

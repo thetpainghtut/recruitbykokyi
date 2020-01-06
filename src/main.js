@@ -27,6 +27,9 @@ Vue.config.productionTip = false
 window.$ = require('jquery');
 window.api = api;
 
+import '@fortawesome/fontawesome-free/css/all.css'
+import '@fortawesome/fontawesome-free/js/all.js'
+
 new Vue({
   router,
   store,

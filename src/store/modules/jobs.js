@@ -4,10 +4,13 @@ export default {
     state: {
         status: '',
         jobs: [],
+        company_jobs: []
     },
 
     getters: {
         getJobs: state => state.jobs,
+
+        getCompanyJobs: state => state.company_jobs,
 
         job_status: state => state.status
     },
@@ -18,6 +21,11 @@ export default {
         success_request: (state, data) => {
             state.status = 'success';
             state.jobs = data;
+        },
+
+        company_jobs: (state, data) => {
+            state.status = 'success';
+            state.company_jobs = data;
         },
 
         failed_request: state => state.status = 'Failed to load data. Something is wrong!',
@@ -46,6 +54,23 @@ export default {
                 .then(response => {
                     state.commit('success_request', response.data);
                     resolve();
+                })
+                .catch(error => {
+                    state.commit('failed_request');
+                    reject(error);
+                });
+            });
+        },
+
+        getJobsByCompany(state, company_id){
+            if (!company_id) {
+                return;
+            }
+            return new Promise((resolve, reject) => {
+                this._vm.$http.get(api.company_jobs_URL + '/' + company_id)
+                .then(response => {
+                    state.commit('company_jobs', response.data);
+                    resolve(response);
                 })
                 .catch(error => {
                     state.commit('failed_request');
