@@ -14,7 +14,7 @@
                             <span v-else>Add New</span>
                         </button>
                     </div>
-                    <div v-if="new_township" class="col-md-6 bg-light m-4">
+                    <div v-if="new_township" class="col-lg-6 bg-light mx-auto m-4">
                         <add-township></add-township>
                     </div>
                 </div>
@@ -58,6 +58,7 @@
                 <div class="form-group">
                     <label>Township Name</label>
                     <input type="text" class="form-control form-control-sm" v-model="current_township.name">
+                    <span v-if="update_error" class="text-danger">{{update_error}}</span>
                 </div>
               </div>
               <div class="modal-footer">
@@ -90,6 +91,10 @@ export default {
 
         townships(){
             return this.$store.getters['townships/townships'];
+        },
+
+        update_error(){
+            return this.$store.getters['townships/update_error'];
         }
     },
 
@@ -109,7 +114,12 @@ export default {
 
         updateTownship(){
             this.$store.dispatch('townships/updateTownship', this.current_township)
-            .then(() => $('#edit_modal').modal('hide'));
+            .then(res => {
+                if (res) {
+                    this.$store.commit('townships/update_error', '');
+                    $('#edit_modal').modal('hide');
+                }
+            })
         },
 
         deleteTownship(township){

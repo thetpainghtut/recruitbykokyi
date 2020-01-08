@@ -5,17 +5,23 @@ export default {
         status: '',
         error: '',
         message: '',
+        update_error: '',
         townships: {},
+        all_townships: []
     },
 
     getters: {
         townships: state => state.townships,
 
+        all_townships: state => state.all_townships,
+
         township_status: state => state.status,
 
         township_error: state => state.error,
 
-        township_message: state => state.message
+        township_message: state => state.message,
+
+        update_error: state => state.update_error
     },
 
     mutations: {
@@ -26,6 +32,10 @@ export default {
             state.townships = data;
         },
 
+        setAllTownships: (state, data) => {
+            state.all_townships = data;
+        },
+
         failed: (state, error) => {
             state.status = 'error';
             state.error = error;
@@ -33,6 +43,10 @@ export default {
 
         setMessage: (state, message) => {
             state.message = message;
+        },
+
+        update_error:(state, error) => {
+            state.update_error = error;
         },
 
         clearError: state => {state.error = ''}
@@ -50,6 +64,16 @@ export default {
             });
         },
 
+        getAllTownships(state){
+            this._vm.$http.get(api.all_townships_URL)
+            .then(response => {
+                state.commit('setAllTownships', response.data)
+            })
+            .catch(error => {
+                state.commit('failed', error);
+            })
+        },
+
         addTownship(state, data){
             return this._vm.$http.post(api.townships_URL, data)
             .then(response =>{
@@ -63,13 +87,15 @@ export default {
         },
 
         updateTownship(state, data){
-            state.commit('loading');
-            this._vm.$http.put(api.townships_URL + data.id, data)
+            return this._vm.$http.put(api.townships_URL + data.id, data)
             .then(response => {
                 state.dispatch('getTownships');
+                return true;
             })
             .catch(error => {
-                state.commit('failed', error);
+                state.commit('update_error', error.response.data.errors.name[0]);
+                return false;
+
             });
         },
 

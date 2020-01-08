@@ -15,16 +15,7 @@
                         <label>Email</label>
                         <input type="email" v-model="company.email" class="form-control form-control-sm" tabindex="7">
                     </div>
-                    <div class="form-group">
-                        <label>Required Position</label>
-                        <v-select
-                        :options="job_titles" 
-                        taggable 
-                        :select-on-key-codes="[9,13]"
-                        v-model="company.job_title"
-                        :tabindex="10"
-                        ></v-select>
-                    </div>
+                    
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
@@ -39,10 +30,7 @@
                         <label>Technology</label>
                         <input type="text" v-model="company.technology" class="form-control form-control-sm" tabindex="8">
                     </div>
-                    <div class="form-group">
-                        <label>Salary</label>
-                        <input type="number" class="form-control form-control-sm" v-model="company.job_salary" tabindex="11">
-                    </div>
+                    
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
@@ -65,16 +53,13 @@
                             <option v-for="type in types" :key="type.key" :value="type">{{type}}</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Job Description</label>
-                        <textarea class="form-control form-control-sm" v-model="company.job_desc" style="resize: none;" tabindex="12"></textarea>
-                    </div>
+                    
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6 offset-md-3 text-center">
                     <div class="form-group">
-                        <button class="btn btn-primary btn-sm w-25" @click="addCompany">Add</button>
+                        <button class="btn btn-primary btn-sm w-25" @click="addCompany" tabindex="10">Add</button>
                     </div>
                 </div>
             </div>
@@ -97,33 +82,12 @@ export default {
                 phone1: '',
                 phone2: '',
                 type: '',
-                job_title: '',
-                job_salary: 0,
-                job_desc: ''
             }
         }
     },
 
-    computed: {
-        jobs(){
-            return this.$store.getters['jobs/getJobs'];
-        },
-        job_titles(){
-            return this.jobs.map((job) => job.title);
-        }
-    },
-
-    
-    created(){
-        this.getAllJobs();
-    },
-
     methods: {
 
-        getAllJobs(){
-            this.$store.dispatch('jobs/getAllJobs');
-        },
-        
         addCompany(){
             this.$store.dispatch('companies/addCompany', this.company)
             .then(() => this.$parent.new_company = false);
