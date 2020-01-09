@@ -33,7 +33,7 @@
                                     <td>{{index+1}}</td>
                                     <td>{{company.name}}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-outline-info" @click="showInfo(company)"><i class="fas fa-info"></i></button>
+                                        <button class="btn btn-sm btn-outline-info" @click="showInfo(company)" data-toggle="tooltip" data-placement="top" title="Show Info"><i class="fas fa-info"></i></button>
 
                                         <button class="btn btn-sm btn-outline-info ml-2" @click="showJobModal(company)" data-toggle="tooltip" data-placement="top" title="Add Job"><i class="fas fa-plus fa-sm"></i></button>
 
@@ -75,10 +75,10 @@
                                 <v-select
                                 :options="jobs"
                                 label="title"
-                                taggable 
+                                taggable
                                 :select-on-key-codes="[9,13]"
                                 v-model="job.title"
-                                :reduce="job => job.title"
+                                :reduce="job=>job.title"
                                 ></v-select>
                             </div>
                         </div>

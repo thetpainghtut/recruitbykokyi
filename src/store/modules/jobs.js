@@ -92,6 +92,16 @@ export default {
                 })
         },
 
+        addStudentJob(state, data){
+            return this._vm.$http.post(api.student_job_URL, data)
+            .then(response => {
+                return true;
+            })
+            .catch(error => {
+                return false;
+            })
+        },
+
         updateJob(state, data) {
             state.commit('job_request');
             return this._vm.$http.put(api.jobs_URL + data.id, data)

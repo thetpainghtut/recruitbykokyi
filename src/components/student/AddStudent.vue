@@ -18,19 +18,6 @@
                     <label>NRC</label>
                     <input type="text" class="form-control form-control-sm" v-model="student.nrc" tabindex="10">
                 </div>
-                <div class="form-group">
-                    <label>Wanted Location</label>
-                    <select v-model="student.required_location" class="custom-select custom-select-sm" tabindex="13">
-                        <option disabled value="">Select One</option>
-                        <option v-for="township in townships.data" :key="township.id" :value="township.id">
-                            {{township.name}}
-                        </option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Expected Salary</label>
-                    <input type="number" class="form-control form-control-sm" v-model="student.expected_salary" min="0">
-                </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
@@ -45,7 +32,7 @@
                     <label>Township</label>
                     <select v-model="student.township_id" class="custom-select custom-select-sm" tabindex="8">
                         <option disabled value="">Select One</option>
-                        <option v-for="township in townships.data" :key="township.id" :value="township.id">
+                        <option v-for="township in townships" :key="township.id" :value="township.id">
                             {{township.name}}
                         </option>
                     </select>
@@ -57,19 +44,6 @@
                             {{religion}}
                         </option>
                     </select>
-                </div>
-                <div class="form-group">
-                    <label>Weekends ?</label><br>
-                
-                    <div class="form-check form-check-inline">
-                        <!-- <label>Weekend?</label> -->
-                        <input type="radio" id="yes" v-model="student.weekend" class="form-check-input" :value="true" tabindex="14">
-                        <label class="form-check-label" for="yes">Yes</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input type="radio" id="no" v-model="student.weekend" class="form-check-input" :value="false" tabindex="15">
-                        <label class="form-check-label" for="no">No</label>
-                    </div>
                 </div>
                 <div class="form-group">
                     <label>CV</label>
@@ -108,16 +82,6 @@
                             {{race}}
                         </option>
                     </select>
-                </div>
-                <div class="form-group">
-                    <label>Required Position</label>
-                    <v-select
-                        :options="job_titles" 
-                        taggable 
-                        :select-on-key-codes="[9,13]"
-                        v-model="student.job_title"
-                        :tabindex="16"
-                        ></v-select>
                 </div>
             </div>
         </div>

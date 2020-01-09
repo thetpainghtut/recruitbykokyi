@@ -3,22 +3,30 @@ export default {
 
     state: {
         status: '',
-        students: [],
+        students: {},
+        all_students: [],
         students_by_job: []
     },
 
     getters: {
         student_status: state => state.status,
         students: state => state.students,
+        all_students: state => state.all_students,
         getStudentsByJob: state => state.students_by_job
     },
 
     mutations: {
         loading: state => state.status = 'loading',
+        
         success: (state, data) => {
             state.status = 'success';
             state.students = data;
         },
+
+        setAllStudents: (state, data) => {
+            state.all_students = data;
+        },
+
         failed: state => {
             state.status = 'failed';
             state.students = [];
@@ -44,7 +52,7 @@ export default {
         getAllStudents(state) {
             this._vm.$http.get(api.all_students_URL)
                 .then(response => {
-                    state.commit('success', response.data)
+                    state.commit('setAllStudents', response.data)
                 })
                 .catch(error => {
                     state.commit('failed');
@@ -79,14 +87,14 @@ export default {
             form_data.set('nrc', data.nrc);
             form_data.set('religion', data.religion);
             form_data.set('race', data.race);
-            form_data.set('required_location', data.required_location);
-            form_data.set('weekend', data.weekend);
+            // form_data.set('required_location', data.required_location);
+            // form_data.set('weekend', data.weekend);
             form_data.set('cv', data.cv);
-            form_data.set('expected_salary', data.expected_salary);
+            // form_data.set('expected_salary', data.expected_salary);
 
-            if (data.job_title) {
-                form_data.set('job_title', data.job_title);
-            }
+            // if (data.job_title) {
+            //     form_data.set('job_title', data.job_title);
+            // }
 
             this._vm.$http.post(api.students_URL, form_data, {
                     headers: {
