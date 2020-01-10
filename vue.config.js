@@ -1,4 +1,4 @@
 module.exports = {
   lintOnSave: false,
-  outputDir: '/home/phoenixwings/Desktop/recruitment/'
+  outputDir: '/home/phoenixwings/Documents/productions/recruitment/'
 }
