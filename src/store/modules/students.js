@@ -12,7 +12,7 @@ export default {
         student_status: state => state.status,
         students: state => state.students,
         all_students: state => state.all_students,
-        getStudentsByJob: state => state.students_by_job
+        students_by_job: state => state.students_by_job
     },
 
     mutations: {
@@ -59,11 +59,8 @@ export default {
                 })
         },
 
-        getStudentsByJob(state, student_id) {
-            if (!student_id) {
-                return;
-            }
-            this._vm.$http.get(api.students_by_job_URL + student_id)
+        getStudentsByJob(state, job_id) {
+            this._vm.$http.get(api.students_by_job_URL + job_id)
                 .then(response => {
                     state.commit('students_by_job', response.data);
                 })

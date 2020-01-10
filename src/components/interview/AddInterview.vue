@@ -5,24 +5,25 @@
                 <div class="col border mx-2">
                     <div class="form-group">
                         <label>Company</label>
-                        <v-select
-                            :options="companies" 
-                            label="name"
-                            :reduce="company => company.id"
-                            @input="getJobs"
-                            :select-on-key-codes="[9,13]"
-                            v-model="interview.company_id"
-                            ></v-select>
+                        <select class="custom-select custom-select-sm" v-model="interview.company_id" @change="getJobs">
+                            <option disabled value="">Select Company</option>
+                            <option 
+                            v-for="company in companies"
+                            :key="company.id"
+                            :value="company.id"
+                            >
+                                {{company.name}}
+                            </option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Position</label>
-                        <select class="custom-select custom-select-sm" v-model="selected_job">
+                        <select class="custom-select custom-select-sm" v-model="interview.job_id" @change="getStudentsByJob(interview.job_id)">
                             <option 
-                            v-for="job in jobs" 
+                            v-for="job in company_jobs" 
                             :key="job.key" 
-                            :value="job.id"
-                            >
-                                {{job.title}}
+                            :value="job.id">
+                            {{job.title}}
                             </option>
                         </select>
                     </div>
@@ -45,7 +46,7 @@
                 <div class="col border mx-2">
                     <div class="form-group">
                         <label>Student</label>
-                        <select class="custom-select custom-select-sm" v-model="selected_student">
+                        <select class="custom-select custom-select-sm" v-model="interview.student_id">
                             <option
                             v-for="(student, index) in students"
                             :key="student.key"
@@ -77,25 +78,18 @@ export default {
                 assigned_date: '',
                 assigned_time: '',
             },
-            jobs: '',
             date_format: 'dd-MMM-yyyy',
-            students: ''
-        }
-    },
-
-    watch: {
-        jobs(){
-            return this.jobs;
-        },
-
-        students(){
-            return this.students;
         }
     },
 
     computed: {
-        selected_job(){
-                return this.jobs.length?this.jobs[0].id:'';
+        
+        company_jobs(){
+            return this.$store.getters['jobs/company_jobs'];
+        },
+
+        students(){
+            return this.$store.getters['students/students_by_job'];
         },
 
         selected_student(){
@@ -105,9 +99,6 @@ export default {
 
     methods: {
         addInterview(){
-
-            this.interview.job_id = this.selected_job;
-            this.interview.student_id = this.selected_student;
 
             this.$store.dispatch('interviews/addInterview', this.interview)
             .then(() => this.$parent.new_interview = false);
@@ -120,19 +111,12 @@ export default {
                 this.students = '';
             } else {
                 this.$store.dispatch('jobs/getJobsByCompany', this.interview.company_id)
-                .then(()=>{
-                    let jobs = this.$store.getters['jobs/getCompanyJobs'];
-                    this.jobs = jobs;
-                })
-                .then(() => {
-                    this.$store.dispatch('students/getStudentsByJob', this.selected_job)
-                    .then(() => {
-                        let students = this.$store.getters['students/getStudentsByJob'];
-                        this.students = students;
-                    })
-                });
             }
         },
+
+        getStudentsByJob(job){
+            this.$store.dispatch('students/getStudentsByJob', job)
+        }
     }
 }
 </script>
