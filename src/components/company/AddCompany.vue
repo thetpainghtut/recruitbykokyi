@@ -35,12 +35,14 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Township</label>
-                        <select v-model="company.township_id" class="custom-select custom-select-sm" tabindex="3">
-                            <option disabled value="">Select One</option>
-                            <option v-for="township in townships.data" :key="township.id" :value="township.id">
-                                {{township.name}}
-                            </option>
-                        </select>
+                        <v-select
+                        :options="townships"
+                        taggable
+                        :select-on-key-codes="[188,9,13]"
+                        label="name"
+                        :reduce="township => township.name"
+                        v-model="company.township"
+                        :tabindex="3"></v-select>
                     </div>
                     <div class="form-group">
                         <label>Phone2</label>
@@ -76,7 +78,7 @@ export default {
                 name: '',
                 technology: '',
                 email: '',
-                township_id: '',
+                township: '',
                 address: '',
                 hr_name: '',
                 phone1: '',

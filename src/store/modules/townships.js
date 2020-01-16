@@ -7,7 +7,7 @@ export default {
         message: '',
         update_error: '',
         townships: {},
-        all_townships: ''
+        all_townships: []
     },
 
     getters: {

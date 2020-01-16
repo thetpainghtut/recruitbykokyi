@@ -5,6 +5,7 @@ export default {
         status: '',
         companies: {},
         all_companies: '',
+        company_jobs: [],
         error: ''
     },
 
@@ -12,6 +13,8 @@ export default {
         getCompanies: state => state.companies,
 
         all_companies: state => state.all_companies,
+
+        company_jobs: state => state.company_jobs,
 
         company_status: state => state.status,
 
@@ -28,6 +31,10 @@ export default {
 
         setAllCompanies: (state, data) => {
             state.all_companies = data;
+        },
+
+        setCompanyJobs: (state, data) => {
+            state.company_jobs = data;
         },
 
         failed: state => {
@@ -59,6 +66,41 @@ export default {
                 .catch(error => {
                     state.commit('failed');
                 })
+        },
+
+        getJobsByCompany(state, company_id){
+            this._vm.$http.get(api.company_jobs_URL(company_id))
+            .then(response => {
+                state.commit('setCompanyJobs', response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
+
+        updateJobByCompany(state, data){
+            let company_id = data.company_id;
+            let job_id = data.job_id;
+            return this._vm.$http.put(api.company_jobs_URL(company_id) + '/' + job_id, data)
+            .then(response => {
+                return true;
+            })
+            .catch(error => {
+                return false;
+            })
+        },
+
+        removeJobByCompany(state, data){
+            let company_id = data.company_id;
+            let job_id = data.job_id;
+
+            return this._vm.$http.delete(api.company_jobs_URL(company_id) + '/' + job_id, data)
+            .then(response => {
+                return true;
+            })
+            .catch(error => {
+                return false;
+            })
         },
 
         addCompany(state, data) {

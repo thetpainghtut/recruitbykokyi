@@ -19,19 +19,26 @@
                     </div>
                 </div>
                 <div class="row p-3">
-                    <div class="col-lg-6 mx-auto">
+                    <div class="col-lg-12 mx-auto">
                         <table class="table table-striped table-sm">
                             <thead>
                                 <tr>
                                     <th>No</th>
                                     <th>Name</th>
+                                    <th class="col-lg-8">Offered Jobs</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="(company, index) in companies.data" :key="company.id">
-                                    <td>{{index+1}}</td>
+                                    <td>{{getOverallIndex(index)}}</td>
                                     <td>{{company.name}}</td>
+                                    <td>
+                                        <span v-for="job in company.jobs" :key="job.key">
+                                            <a href="#" @click="showEditJob(company, job)" class="btn btn-outline-info btn-sm m-1">{{job.title}}
+                                            </a>
+                                        </span>
+                                    </td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-info" @click="showInfo(company)" data-toggle="tooltip" data-placement="top" title="Show Info"><i class="fas fa-info"></i></button>
 
@@ -52,7 +59,7 @@
         </div>
 
         <div class="modal" id="add_job_modal" tabindex="-1" role="dialog">
-          <div class="modal-dialog" role="document">
+          <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title">Add Job</h5>
@@ -87,18 +94,17 @@
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label>Salary</label>
-                                <input type="number" class="form-control form-control-sm" v-model="job.salary" min="0">
+                                <input type="number" class="form-control form-control-sm" v-model="job.salary" min="0" required>
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label>Working Location</label>
-                                <select v-model="job.township_id" class="custom-select custom-select-sm">
-                                    <option disabled value="">Select One</option>
-                                    <option v-for="township in townships.data" :key="township.id" :value="township.id">
-                                        {{township.name}}
-                                    </option>
-                                </select>
+                                <v-select
+                                :options="townships"
+                                label="name"
+                                v-model="job.township_id"
+                                :reduce="township => township.id"></v-select>
                             </div>
                         </div>
                     </div>
@@ -118,6 +124,51 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <div class="modal" id="edit_job_modal" tabindex="-1" role="dialog" ref="vuemodal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Jobs of Company</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <p class="font-weight-bold">Company Name</p>
+                                <p>{{current_company.name}}</p>
+                            </div>
+                            <div class="form-group col6">
+                                <p class="font-weight-bold">Job Title</p>
+                                <p>{{current_job.title}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Salary</label>
+                            <input type="number" v-model="current_job.salary" class="form-control form-control-sm">
+                        </div>
+                        <div class="form-group">
+                            <label>Working Location</label>
+                            <v-select
+                            :options="townships"
+                            label="name"
+                            v-model="current_job.township_id"
+                            :reduce="township => township.id"></v-select>
+                        </div>
+                        <div class="form-group">
+                            <label>Job Description</label>
+                            <textarea v-model="current_job.desc" class="form-control form-control-sm" rows="5" style="resize: none;"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger btn-sm" @click="removeJob()"><i class="far fa-trash-alt"></i></button>
+                        <button type="button" class="btn btn-primary btn-sm" @click="updateJob">Update</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="modal" id="edit_modal" tabindex="-1" role="dialog">
@@ -146,7 +197,7 @@
                     <label>Township</label>
                     <select class="custom-select custom-select-sm" v-model="current_company.township_id">
                         <option 
-                        v-for="township in townships.data" 
+                        v-for="township in townships" 
                         :key="township.id" 
                         :value="township.id"
                         :selected="current_company.township_id == township.id">
@@ -243,18 +294,22 @@ export default {
         return {
             types: ['Foreign', 'Local'],
             new_company: false,
+            show_edit: false,
             current_company: {},
+            current_job: '',
             job: {
                 title: '',
                 salary: 0,
                 township_id: '',
                 desc: '',
                 company_id: ''
-            }
+            },
+            edit_salary: false,
         }
     },
 
     computed: {
+        
         companies() {
             return this.$store.getters['companies/getCompanies'];
         },
@@ -264,31 +319,37 @@ export default {
         },
 
         townships(){
-            return this.$store.getters['townships/townships'];
+            return this.$store.getters['townships/all_townships'];
         },
 
         jobs(){
             return this.$store.getters['jobs/all_jobs'];
         },
 
-        // job_titles(){
-        //     return this.jobs.map(job => job.title);
-        // },
-
         company_jobs(){
-            return this.$store.getters['jobs/company_jobs'];
+            return this.$store.getters['companies/company_jobs'];
         }
     },
 
     created(){
         this.getCompanies();
-        this.getTownships();
+        this.getAllTownships();
         this.getAllJobs();
     },
 
+    mounted(){
+        $(this.$refs.vuemodal).on('hide.bs.modal', function(){
+            
+        })
+    },
+
     methods: {
-        getTownships(page = 1){
-            this.$store.dispatch('townships/getTownships', page);
+        getOverallIndex(index){
+          return (this.companies.meta.current_page*15)-15 + index + 1;
+        },
+
+        getAllTownships(){
+            this.$store.dispatch('townships/getAllTownships');
         },
 
         getCompanies(page = 1){
@@ -310,13 +371,43 @@ export default {
             this.$set(this.job, 'company_id', this.current_company.id);
             this.$store.dispatch('jobs/addJob', this.job)
             .then(() => {
+                this.getCompanies();
+                this.job = {};
                 $('#add_job_modal').modal('hide');
+            })
+        },
+
+        showEditJob(company, job){
+            this.current_company = company;
+            this.current_job = {...job, ...job.pivot};
+
+            // this.$store.dispatch('companies/getJobsByCompany', this.current_company.id);
+            $('#edit_job_modal').modal('show');
+        },
+
+        updateJob(){
+            this.$store.dispatch('companies/updateJobByCompany', this.current_job)
+            .then(res => {
+                if (res) {
+                    this.getCompanies(this.companies.meta.current_page);
+                    $('#edit_job_modal').modal('hide');
+                }
+            })
+        },
+
+        removeJob(){
+            this.$store.dispatch('companies/removeJobByCompany', this.current_job)
+            .then(res => {
+                if (res) {
+                    this.getCompanies(this.companies.meta.current_page);
+                    $('#edit_job_modal').modal('hide');
+                }
             })
         },
 
         showInfo(company){
             this.current_company = company;
-            this.$store.dispatch('jobs/getJobsByCompany', this.current_company.id);
+            this.$store.dispatch('companies/getJobsByCompany', this.current_company.id);
 
             $('#info_modal').modal('show');
         },
@@ -337,3 +428,8 @@ export default {
     }
 }
 </script>
+<style scoped>
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>

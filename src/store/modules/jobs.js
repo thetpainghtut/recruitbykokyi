@@ -102,6 +102,16 @@ export default {
             })
         },
 
+        editJobByCompany(state, company_id){
+            this._vm.$http.post(api.company_jobs_URL, company_id)
+            .then(response => {
+                return true;
+            })
+            .catch(error => {
+                return false;
+            })
+        },
+
         updateJob(state, data) {
             state.commit('job_request');
             return this._vm.$http.put(api.jobs_URL + data.id, data)

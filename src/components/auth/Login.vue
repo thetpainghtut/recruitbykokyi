@@ -1,31 +1,35 @@
 <template>
-  <div class="container-fluid" id="login">
+  <div id="login" class="container-fluid">
       <div class="row pt-5">
-          <div class="col-md-12 text-center">
-              <img src="@/assets/logo.jpg" height="100">
-          </div>
+        <div class="col-md-12 text-center">
+          <img src="@/assets/logo.jpg" height="100">
+        </div>
       </div>
-    
-    <div v-if="isLoggedIn">
-      <p>You are already authenticated.</p>
-    </div>
-    <div class="row" v-else>
-      <div id="formContent" class="col-md-6 offset-md-3 text-center">
-        <div id="status">
-          <div v-if="status=='loading'" class="pt-3">
-            <div class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
+      <div v-if="isLoggedIn" class="row pt-5">
+        <div class="col text-center">
+          <p class="text-white">You are already authenticated.</p>
+          <a href="/" class="btn btn-primary btn-sm text-center">Go Back</a>
+        </div>
+      </div>
+      <div v-else>
+        <div class="row pt-5">
+          <div class="col-lg-6 mx-auto">
+            <div id="status">
+              <div v-if="status == 'loading'" class="pt-3 text-center">
+                <div class="spinner-border" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+              </div>
+              <div v-else class="pt-5 text-center">
+                <span class="alert text-white">{{status}}</span>
+              </div>
             </div>
           </div>
-          <div v-else class="pt-5">
-            <span class="alert text-white">{{status}}</span>
-          </div>
         </div>
-
-        <!-- Login Form -->
-        <div class="col-md-6 offset-md-3">
-        <form @submit.prevent="login(user)">
-            <div class="form-group">
+        <div class="row pb-5">
+          <div class="col-lg-4 mx-auto">
+            <form @submit.prevent="login(user)">
+              <div class="form-group">
                 <label>Email</label>
                 <input
                 type="text"
@@ -33,8 +37,8 @@
                 name="login"
                 placeholder="Enter Email"
                 v-model="user.username">
-            </div>
-            <div class="form-group">
+              </div>
+              <div class="form-group">
                 <label>Password</label>
                 <input
                 type="password"
@@ -42,14 +46,17 @@
                 name="password"
                 placeholder="Enter Password"
                 v-model="user.password">
-            </div>
-          <input type="submit" class="fadeIn fourth mt-3" value="Log In">
-        </form>
+              </div>
+              <div class="form-group text-center">
+                <input type="submit" class="btn btn-dark btn-sm w-25 mt-3" value="Log In">
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
+
 <script>
 export default {
   data() {
@@ -74,218 +81,17 @@ export default {
 
   methods: {
     login(user) {
-      this.$store
-        .dispatch("auth/login", user)
+      this.$store.dispatch("auth/login", user)
         .then(() => this.$router.push("/"))
         .catch(err => console.log(err));
     }
   }
 };
 </script>
+
 <style scoped>
-
-#status {
-  width: 100%;
-  height: 100px;
-}
-
-#login {
-  background: cornflowerblue;
-  height: 100vh;
-}
-
-/* input[type="submit"] {
-  background-color: #ccecc8;
-  border: none;
-  padding: 15px 80px;
-  text-align: center;
-  text-decoration: none;
-  font-weight: bold;
-  display: inline-block;
-  text-transform: uppercase;
-  font-size: 13px;
-  -webkit-box-shadow: 0 10px 30px 0 rgba(95, 186, 233, 0.4);
-  box-shadow: 0 10px 30px 0 rgba(95, 186, 233, 0.4);
-  -webkit-border-radius: 5px 5px 5px 5px;
-  border-radius: 5px 5px 5px 5px;
-  margin: 5px 20px 40px 20px;
-  -webkit-transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out;
-  -ms-transition: all 0.3s ease-in-out;
-  -o-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-}
-
-input[type="submit"]:hover {
-  background-color: #e4a9a9;
-}
-
-input[type="submit"]:active {
-  -moz-transform: scale(0.95);
-  -webkit-transform: scale(0.95);
-  -o-transform: scale(0.95);
-  -ms-transform: scale(0.95);
-  transform: scale(0.95);
-}
-
-input[type="text"],
-input[type="password"] {
-  background-color: #f6f6f6;
-  border: none;
-  color: #0d0d0d;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 5px;
-  width: 85%;
-  border: 2px solid #f6f6f6;
-  -webkit-transition: all 0.5s ease-in-out;
-  -moz-transition: all 0.5s ease-in-out;
-  -ms-transition: all 0.5s ease-in-out;
-  -o-transition: all 0.5s ease-in-out;
-  transition: all 0.5s ease-in-out;
-  -webkit-border-radius: 5px 5px 5px 5px;
-  border-radius: 5px 5px 5px 5px;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus {
-  background-color: #fff;
-  border-bottom: 2px solid #5fbae9;
-}
-
-input[type="text"]:placeholder,
-input[type="password"]:placeholder {
-  color: #cccccc;
-}
-
-
-.fadeInDown {
-  -webkit-animation-name: fadeInDown;
-  animation-name: fadeInDown;
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
-}
-
-@-webkit-keyframes fadeInDown {
-  0% {
-    opacity: 0;
-    -webkit-transform: translate3d(0, -100%, 0);
-    transform: translate3d(0, -100%, 0);
+  #login {
+    min-height: 100vh;
+    background: cornflowerblue;
   }
-  100% {
-    opacity: 1;
-    -webkit-transform: none;
-    transform: none;
-  }
-}
-
-@keyframes fadeInDown {
-  0% {
-    opacity: 0;
-    -webkit-transform: translate3d(0, -100%, 0);
-    transform: translate3d(0, -100%, 0);
-  }
-  100% {
-    opacity: 1;
-    -webkit-transform: none;
-    transform: none;
-  }
-}
-
-@-webkit-keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@-moz-keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.fadeIn {
-  opacity: 0;
-  -webkit-animation: fadeIn ease-in 1;
-  -moz-animation: fadeIn ease-in 1;
-  animation: fadeIn ease-in 1;
-
-  -webkit-animation-fill-mode: forwards;
-  -moz-animation-fill-mode: forwards;
-  animation-fill-mode: forwards;
-
-  -webkit-animation-duration: 1s;
-  -moz-animation-duration: 1s;
-  animation-duration: 1s;
-}
-
-.fadeIn.first {
-  -webkit-animation-delay: 0.4s;
-  -moz-animation-delay: 0.4s;
-  animation-delay: 0.4s;
-}
-
-.fadeIn.second {
-  -webkit-animation-delay: 0.6s;
-  -moz-animation-delay: 0.6s;
-  animation-delay: 0.6s;
-}
-
-.fadeIn.third {
-  -webkit-animation-delay: 0.8s;
-  -moz-animation-delay: 0.8s;
-  animation-delay: 0.8s;
-}
-
-.fadeIn.fourth {
-  -webkit-animation-delay: 1s;
-  -moz-animation-delay: 1s;
-  animation-delay: 1s;
-}
-
-.underlineHover:after {
-  display: block;
-  left: 0;
-  bottom: -10px;
-  width: 0;
-  height: 2px;
-  background-color: #56baed;
-  content: "";
-  transition: width 0.2s;
-}
-
-.underlineHover:hover {
-  color: #0d0d0d;
-}
-
-.underlineHover:hover:after {
-  width: 100%;
-}
-
-
-*:focus {
-  outline: none;
-}
-
-#icon {
-  width: 60%;
-} */
 </style>
