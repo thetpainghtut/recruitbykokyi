@@ -5,14 +5,16 @@ export default {
         status: '',
         students: {},
         all_students: [],
-        students_by_job: []
+        students_by_job: [],
+        student_jobs: [],
     },
 
     getters: {
         student_status: state => state.status,
         students: state => state.students,
         all_students: state => state.all_students,
-        students_by_job: state => state.students_by_job
+        students_by_job: state => state.students_by_job,
+        student_jobs: state => state.student_jobs,
     },
 
     mutations: {
@@ -34,11 +36,15 @@ export default {
         students_by_job: (state, data) => {
             state.status = 'success';
             state.students_by_job = data;
+        },
+
+        setJobsByStudents: (state, data) => {
+            state.student_jobs = data;
         }
     },
 
     actions: {
-        getStudents(state, page = 1) {
+        getStudents(state, page) {
             state.commit('loading');
             this._vm.$http.get(api.students_URL + '?page=' + page)
                 .then(response => {
@@ -73,25 +79,19 @@ export default {
             state.commit('loading');
             let form_data = new FormData();
             form_data.set('name', data.name);
+            form_data.set('father_name', data.father_name);
             form_data.set('batch', data.batch);
             form_data.set('email', data.email);
             form_data.set('phone', data.phone);
+            form_data.set('nrc', data.nrc);
+            form_data.set('address', data.address);
+            form_data.set('township_id', data.township_id);
+            form_data.set('gender', data.gender);
+            form_data.set('religion', data.religion);
             form_data.set('dob', data.dob);
             form_data.set('skills', data.skills);
-            form_data.set('township_id', data.township_id);
-            form_data.set('address', data.address);
-            form_data.set('gender', data.gender);
-            form_data.set('nrc', data.nrc);
-            form_data.set('religion', data.religion);
-            form_data.set('race', data.race);
-            // form_data.set('required_location', data.required_location);
-            // form_data.set('weekend', data.weekend);
+            form_data.set('language_skills', JSON.stringify(data.language_skills));
             form_data.set('cv', data.cv);
-            // form_data.set('expected_salary', data.expected_salary);
-
-            // if (data.job_title) {
-            //     form_data.set('job_title', data.job_title);
-            // }
 
             this._vm.$http.post(api.students_URL, form_data, {
                     headers: {
@@ -99,7 +99,7 @@ export default {
                     }
                 })
                 .then(response => {
-                    state.dispatch('getStudents');
+                    state.dispatch('getStudents', 1);
                 })
                 .catch(error => {
                     state.commit('failed');
@@ -126,6 +126,48 @@ export default {
                 .catch(error => {
                     state.commit('failed');
                 })
+        },
+
+        addJobsByStudent(state, data){
+            let student_id = data.id;
+            return this._vm.$http.post(api.student_jobs_URL(student_id), data)
+            .then(response => {
+                state.dispatch('getStudents', 1);
+                return true;
+            })
+            .catch(error => {
+                return false;
+            });
+        },
+
+        updateJobOfStudent(state, data){
+            return this._vm.$http.put(api.student_jobs_URL(data.student_id) + `/${data.job_id}`, data)
+            .then(response => {
+                return true;
+            })
+            .catch(error => {
+                return false;
+            })
+        },
+
+        removeJobOfStudent(state, data){
+            return this._vm.$http.delete(api.student_jobs_URL(data.student_id) + `/${data.job_id}`)
+            .then(response => {
+                return true;
+            })
+            .catch(error => {
+                return false;
+            })
+        },
+
+        getJobsByStudent(state, student_id){
+            this._vm.$http.get(api.student_jobs_URL(student_id))
+            .then(response => {
+                state.commit('setJobsByStudents', response.data)
+            })
+            .catch(error =>{
+                console.log(error);
+            })
         }
     }
 }

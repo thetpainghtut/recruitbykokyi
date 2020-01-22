@@ -78,6 +78,18 @@ export default {
             })
         },
 
+        addJobByCompany(state, data) {
+            let company_id = data.company_id;
+            this._vm.$http.post(api.company_jobs_URL(company_id), data)
+                .then(response => {
+                    dispatch('jobs/getAllJobs', {root: true});
+                })
+                .catch(error => {
+                    state.commit('failed');
+                })
+        },
+
+
         updateJobByCompany(state, data){
             let company_id = data.company_id;
             let job_id = data.job_id;

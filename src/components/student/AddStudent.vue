@@ -4,84 +4,115 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Name</label>
-                    <input type="text" class="form-control form-control-sm" v-model="student.name" tabindex="1">
+                    <input type="text" class="form-control form-control-sm" v-model="student.name">
                 </div>
+            </div>
+            <div class="col-md-4">
                 <div class="form-group">
-                    <label>Phone</label>
-                    <input type="tel" class="form-control form-control-sm" v-model="student.phone" tabindex="4">
-                </div>
-                <div class="form-group">
-                    <label>Address</label>
-                    <input type="text" class="form-control form-control-sm" v-model="student.address" tabindex="7">
-                </div>
-                <div class="form-group">
-                    <label>NRC</label>
-                    <input type="text" class="form-control form-control-sm" v-model="student.nrc" tabindex="10">
+                    <label>Father's Name</label>
+                    <input type="text" class="form-control form-control-sm" v-model="student.father_name">
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Batch</label>
-                    <input type="text" class="form-control form-control-sm" v-model="student.batch" tabindex="2">
+                    <input type="text" class="form-control form-control-sm" v-model="student.batch">
                 </div>
+            </div>
+            <div class="col-md-4">
                 <div class="form-group">
-                    <label>Date of Birth</label>
-                    <date-picker v-model="student.dob" :format="date_format" :bootstrapStyling="true" tabindex="5"></date-picker>
+                    <label>Email</label>
+                    <input type="email" class="form-control form-control-sm" v-model="student.email">
                 </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" class="form-control form-control-sm" v-model="student.phone">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>NRC</label>
+                    <input type="text" class="form-control form-control-sm" v-model="student.nrc">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" class="form-control form-control-sm" v-model="student.address">
+                </div>
+            </div>
+            <div class="col-md-4">
                 <div class="form-group">
                     <label>Township</label>
-                    <select v-model="student.township_id" class="custom-select custom-select-sm" tabindex="8">
+                    <select v-model="student.township_id" class="custom-select custom-select-sm">
                         <option disabled value="">Select One</option>
                         <option v-for="township in townships" :key="township.id" :value="township.id">
                             {{township.name}}
                         </option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Religion</label>
-                    <select v-model="student.religion" class="custom-select custom-select-sm" tabindex="11">
-                        <option v-for="religion in religions" :key="religion.key" :value="religion">
-                            {{religion}}
-                        </option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>CV</label>
-                    <input type="file" class="form-control-file form-control-sm" @change="getFile" tabindex="17">
-                </div>
             </div>
-
             <div class="col-md-4">
                 <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" class="form-control form-control-sm" v-model="student.email" tabindex="3">
-                </div>
-                <div class="form-group">
-                    <label>Skills</label>
-                    <v-select
-                        :options="skills" 
-                        taggable
-                        multiple
-                        :select-on-key-codes="[188,13]"
-                        v-model="student.skills"
-                        :tabindex="6"
-                        ></v-select>
-                </div>
-                <div class="form-group">
                     <label>Gender</label>
-                    <select v-model="student.gender" class="custom-select custom-select-sm" tabindex="9">
+                    <select v-model="student.gender" class="custom-select custom-select-sm">
                         <option v-for="gender in genders" :key="gender.key" :value="gender">
                             {{gender}}
                         </option>
                     </select>
                 </div>
+            </div>
+            <div class="col-md-4">
                 <div class="form-group">
-                    <label>Ethnicity</label>
-                    <select v-model="student.race" class="custom-select custom-select-sm" tabindex="12">
-                        <option v-for="race in races" :key="race.key" :value="race">
-                            {{race}}
+                    <label>Religion</label>
+                    <select v-model="student.religion" class="custom-select custom-select-sm">
+                        <option v-for="religion in religions" :key="religion.key" :value="religion">
+                            {{religion}}
                         </option>
                     </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <date-picker v-model="student.dob" :format="date_format" :bootstrapStyling="true"></date-picker>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Skills</label>
+                    <v-select
+                        :options="skills"
+                        label="name"
+                        taggable
+                        multiple
+                        :select-on-key-codes="[188,13]"
+                        v-model="student.skills"
+                        :reduce="skill => skill.name"></v-select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label>Language Skills</label>
+                <table class="table table-borderless">
+                    <tr v-for="language in languages" :key="language.id">
+                        <td>
+                            <input class="form-check-input" type="checkbox" :value="language.id" v-model="student.language_skills">
+                            <label class="form-check-label">
+                                {{language.name}}
+                            </label>
+                        </td>
+                        <td v-if="student.language_skills.some(skill => skill == language.id)">
+                            <input type="text" class="form-control form-control-sm" placeholder="Language Level" v-model="levels[language.id]">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>CV</label>
+                    <input type="file" class="form-control-file form-control-sm" @change="getFile">
                 </div>
             </div>
         </div>
@@ -94,12 +125,13 @@
 </template>
 <script>
 export default {
-    props: ['townships', 'job_titles', 'genders', 'religions', 'races'],
+    props: ['townships', 'genders', 'religions', 'skills', 'languages'],
 
     data(){
         return {
             student: {
                 name: '',
+                father_name: '',
                 batch: '',
                 email: '',
                 phone: '',
@@ -115,18 +147,16 @@ export default {
                 required_location: '',
                 weekend: true,
                 job_title: '',
-                expected_salary: ''
+                expected_salary: '',
+                language_skills: []
             },
             cv_file: '',
             date_format: 'dd MMM yyyy',
-            skills: ['PHP', 'Laravel', 'VueJS'],
-            
-            
-            
-            styles: ['form-control form-control-sm']
+            styles: ['form-control form-control-sm'],
+            levels: []
         }
     },
- 
+
     methods: {
 
         getFile(e){
@@ -136,6 +166,14 @@ export default {
         },
 
         addStudent(){
+            let skills = [];
+            this.student.language_skills.forEach(skill => {
+                skills.push({
+                    id: skill,
+                    level: this.levels[skill]
+                })
+            });
+            this.student.language_skills = skills;
             this.student.cv = this.cv_file;
             this.$store.dispatch('students/addStudent', this.student)
             .then(() => this.$parent.new_student = false);

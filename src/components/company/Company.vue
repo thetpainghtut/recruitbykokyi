@@ -264,11 +264,27 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <label>Required Positions</label>
-                            <ul v-if="company_jobs">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Salary</th>
+                                        <th>Location</th>
+                                    </tr>
+                                </thead>
+                                <tbody v-if="company_jobs">
+                                    <tr v-for="company_job in company_jobs" :key="company_job.id">
+                                        <td>{{company_job.title}}</td>
+                                        <td>{{company_job.salary}}</td>
+                                        <td>{{company_job.township_name}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- <ul v-if="company_jobs">
                                 <li v-for="company_job in company_jobs" :key="company_job.key">
                                     {{company_job.title}}
                                 </li>
-                            </ul>
+                            </ul> -->
                         </div>
                     </div>
                     
@@ -369,7 +385,7 @@ export default {
 
         addJob(){
             this.$set(this.job, 'company_id', this.current_company.id);
-            this.$store.dispatch('jobs/addJob', this.job)
+            this.$store.dispatch('companies/addJobByCompany', this.job)
             .then(() => {
                 this.getCompanies();
                 this.job = {};

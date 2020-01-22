@@ -81,27 +81,6 @@ export default {
                 });
         },
 
-        addJob(state, data) {
-            state.commit('job_request');
-            this._vm.$http.post(api.jobs_URL, data)
-                .then(response => {
-                    state.dispatch('getAllJobs');
-                })
-                .catch(error => {
-                    state.commit('failed_request');
-                })
-        },
-
-        addStudentJob(state, data){
-            return this._vm.$http.post(api.student_job_URL, data)
-            .then(response => {
-                return true;
-            })
-            .catch(error => {
-                return false;
-            })
-        },
-
         editJobByCompany(state, company_id){
             this._vm.$http.post(api.company_jobs_URL, company_id)
             .then(response => {
