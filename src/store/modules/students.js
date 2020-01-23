@@ -66,7 +66,7 @@ export default {
         },
 
         getStudentsByJob(state, job_id) {
-            this._vm.$http.get(api.students_by_job_URL + job_id)
+            this._vm.$http.get(api.students_by_job_URL + '/' + job_id)
                 .then(response => {
                     state.commit('students_by_job', response.data);
                 })
@@ -108,7 +108,7 @@ export default {
 
         updateStudent(state, data) {
             state.commit('loading');
-            return this._vm.$http.put(api.students_URL + data.id, data)
+            return this._vm.$http.put(api.students_URL + '/' + data.id, data)
                 .then(response => {
                     state.dispatch('getStudents', 1);
                     return true;
@@ -121,7 +121,7 @@ export default {
 
         deleteStudent(state, data) {
             state.commit('loading');
-            this._vm.$http.delete(api.students_URL + data.id, data)
+            this._vm.$http.delete(api.students_URL + '/' + data.id, data)
                 .then(response => {
                     state.dispatch('getStudents', 1);
                 })

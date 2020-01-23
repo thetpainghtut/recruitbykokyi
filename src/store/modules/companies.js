@@ -127,7 +127,7 @@ export default {
 
         updateCompany(state, data) {
             state.commit('loading');
-            this._vm.$http.put(api.companies_URL + data.id, data)
+            this._vm.$http.put(api.companies_URL + '/' + data.id, data)
                 .then(response => {
                     state.dispatch('getCompanies');
                 })
@@ -138,7 +138,7 @@ export default {
 
         deleteCompany(state, data) {
             state.commit('loading');
-            this._vm.$http.delete(api.companies_URL + data.id, data)
+            this._vm.$http.delete(api.companies_URL + '/' + data.id, data)
                 .then(response => {
                     state.dispatch('getCompanies');
                 })

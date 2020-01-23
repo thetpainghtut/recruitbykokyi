@@ -60,7 +60,7 @@ export default {
 
         updateInterview(state, interview){
             return new Promise((resolve, reject) => {
-                this._vm.$http.put(api.interviews_URL + interview.id, interview)
+                this._vm.$http.put(api.interviews_URL + '/' + interview.id, interview)
                 .then(response => {
                     state.dispatch('getInterviews');
                     resolve(response);
@@ -74,7 +74,7 @@ export default {
 
         deleteInterview(state, interview){
             return new Promise((resolve, reject) => {
-                this._vm.$http.delete(api.interviews_URL + interview.id, interview)
+                this._vm.$http.delete(api.interviews_URL + '/' + interview.id, interview)
                 .then(response => {
                     state.dispatch('getInterviews');
                     resolve(response);
