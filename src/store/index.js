@@ -12,7 +12,7 @@ import languages from './modules/languages'
 
 Vue.use(Vuex)
 
-axios.defaults.baseURL = 'http://localhost:8000/api';
+axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;
 Vue.prototype.$http = axios
 const access_token = localStorage.getItem('access_token')
 if(access_token)
