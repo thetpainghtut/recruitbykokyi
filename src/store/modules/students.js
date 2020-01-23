@@ -108,12 +108,14 @@ export default {
 
         updateStudent(state, data) {
             state.commit('loading');
-            this._vm.$http.put(api.students_URL + data.id, data)
+            return this._vm.$http.put(api.students_URL + data.id, data)
                 .then(response => {
-                    state.dispatch('getStudents');
+                    state.dispatch('getStudents', 1);
+                    return true;
                 })
                 .catch(error => {
                     state.commit('failed');
+                    return false;
                 });
         },
 
@@ -121,7 +123,7 @@ export default {
             state.commit('loading');
             this._vm.$http.delete(api.students_URL + data.id, data)
                 .then(response => {
-                    state.dispatch('getStudents');
+                    state.dispatch('getStudents', 1);
                 })
                 .catch(error => {
                     state.commit('failed');

@@ -5,7 +5,7 @@
                 <div class="col border mx-2">
                     <div class="form-group">
                         <label>Company</label>
-                        <select class="custom-select custom-select-sm" v-model="interview.company_id" @change="getJobsByCompany">
+                        <select class="custom-select custom-select-sm" v-model="interview.company_id" @change="getJobs">
                             <option disabled value="">Select Company</option>
                             <option 
                             v-for="company in companies"
@@ -18,27 +18,17 @@
                     </div>
                     <div class="form-group">
                         <label>Position</label>
-                        <select class="custom-select custom-select-sm" v-model="interview.job_id" @change="getStudentsByJob">
-                            <option
-                            v-for="company_job in company_jobs"
-                            :key="company_job.id"
-                            :value="company_job.id">
-                                {{company_job.title}}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Student</label>
-                        <select class="custom-select custom-select-sm" v-model="interview.student_id">
-                            <option
-                            v-for="student in job_students"
-                            :key="student.key"
-                            :value="student.id">
-                                {{student.name}}
+                        <select class="custom-select custom-select-sm" v-model="interview.job_id" @change="getStudentsByJob(interview.job_id)">
+                            <option 
+                            v-for="job in company_jobs" 
+                            :key="job.key" 
+                            :value="job.id">
+                            {{job.title}}
                             </option>
                         </select>
                     </div>
                 </div>
+                
                 <div class="col border mx-2">
                     <div class="form-group">
                         <label>Assigned Date</label>
@@ -51,6 +41,21 @@
                         <label>Time</label>
                         <input type="time" class="form-control form-control-sm" v-model="interview.assigned_time">
                     </div>
+                    
+                </div>
+                <div class="col border mx-2">
+                    <div class="form-group">
+                        <label>Student</label>
+                        <select class="custom-select custom-select-sm" v-model="interview.student_id">
+                            <option
+                            v-for="(student, index) in students"
+                            :key="student.key"
+                            :value="student.id"
+                            :selected="index == 0">
+                                {{student.name}}
+                            </option>
+                        </select>
+                    </div>
                     <div class="form-group text-center">
                         <button class="btn btn-primary btn-sm w-25" @click="addInterview">Assign</button>
                     </div>
@@ -62,7 +67,7 @@
 <script>
     import Vue from 'vue';
 export default {
-    props: ['companies', 'jobs', 'students'],
+    props: ['companies'],
 
     data(){
         return {
@@ -77,35 +82,41 @@ export default {
         }
     },
 
-    computed:{
+    computed: {
+        
         company_jobs(){
-            return this.$store.getters['companies/company_jobs'];
+            return this.$store.getters['jobs/company_jobs'];
         },
 
-        job_students(){
+        students(){
             return this.$store.getters['students/students_by_job'];
+        },
+
+        selected_student(){
+            return this.students.length?this.students[0].id: '';
         }
     },
 
     methods: {
-
-        getJobsByCompany(){
-            let company_id = this.interview.company_id;
-            this.$store.dispatch('companies/getJobsByCompany', company_id)
-        },
-
-        getStudentsByJob(){
-            let job_id = this.interview.job_id;
-            this.$store.dispatch('students/getStudentsByJob', job_id);
-        },
-
         addInterview(){
+
             this.$store.dispatch('interviews/addInterview', this.interview)
-            .then(() => {
-                this.$parent.new_interview = false;
-            })
+            .then(() => this.$parent.new_interview = false);
+            
+        },
+
+        getJobs(){
+            if (!this.interview.company_id) {
+                this.jobs = '';
+                this.students = '';
+            } else {
+                this.$store.dispatch('jobs/getJobsByCompany', this.interview.company_id)
+            }
+        },
+
+        getStudentsByJob(job){
+            this.$store.dispatch('students/getStudentsByJob', job)
         }
     }
-
 }
 </script>

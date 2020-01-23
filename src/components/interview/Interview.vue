@@ -8,7 +8,7 @@
             </div>
             <div v-else-if="status == 'success'">
                 <div class="row">
-                    <div class="col-12 text-center">
+                    <div class="col-12 text-center mb-2">
                         <button class="btn btn-info btn-sm mt-2" @click="new_interview = !new_interview">
                             <span v-if="new_interview">Done</span>
                             <span v-else>Add New</span>
@@ -16,7 +16,9 @@
                     </div>
                     <div v-if="new_interview" class="col-lg-12 bg-light mx-auto">
                         <add-interview
-                        :companies="companies"></add-interview>
+                        :companies="companies"
+                        :jobs="jobs"
+                        :students="students"></add-interview>
                     </div>
                 </div>
                 <div class="row p-3">
@@ -44,8 +46,8 @@
                                     <td>{{interview.assigned_time | time}}</td>
                                     <td>{{interview.status}}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-warning mx-2" @click="editInterview(interview)">Edit</button>
-                                        <button class="btn btn-danger btn-sm" @click="deleteInterview(interview)">Delete</button>
+                                        <button class="btn btn-sm btn-outline-warning mx-2" @click="editInterview(interview)" data-toggle="tooltip" data-placement="top" title="Edit Interview"><i class="far fa-edit fa-sm"></i></button>
+                                        <button class="btn btn-outline-danger btn-sm" @click="deleteInterview(interview)" data-toggle="tooltip" data-placement="top" title="Remove Interview"><i class="far fa-trash-alt fa-sm"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -144,7 +146,7 @@
             },
 
             jobs(){
-                return this.$store.getters['jobs/getJobs'];
+                return this.$store.getters['jobs/all_jobs'];
             },
 
             students(){

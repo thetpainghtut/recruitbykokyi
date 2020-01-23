@@ -58,7 +58,6 @@ export default {
         },
 
         getAllCompanies(state) {
-            state.commit('loading');
             this._vm.$http.get(api.all_companies_URL)
                 .then(response => {
                     state.commit('setAllCompanies', response.data);

@@ -48,7 +48,7 @@
                                     <td>
                                         <button class="btn btn-sm btn-outline-info ml-2" @click="showInfo(student)" data-toggle="tooltip" data-placement="top" title="Show Info"><i class="fas fa-info fa-sm"></i></button>
                                         <button class="btn btn-sm btn-outline-success ml-2" @click="showAddModal(student)" data-toggle="tooltip" data-placement="top" title="Add Job"><i class="fas fa-plus fa-sm"></i></button>
-                                        <button class="btn btn-sm btn-outline-warning mx-2" @click="editStudent(student)" data-toggle="tooltip" data-placement="top" title="Edit Student Data"><i class="far fa-edit fa-sm"></i></button>
+                                        <button class="btn btn-sm btn-outline-warning mx-2" @click="showEditStudent(student)" data-toggle="tooltip" data-placement="top" title="Edit Student Data"><i class="far fa-edit fa-sm"></i></button>
                                         <button class="btn btn-outline-danger btn-sm" @click="deleteStudent(student)" data-toggle="tooltip" data-placement="top" title="Remove Student"><i class="far fa-trash-alt fa-sm"></i></button>
                                     </td>
                                 </tr>
@@ -168,6 +168,117 @@
             </div>
           </div>
         </div>
+
+        <div class="modal" id="edit_student_modal" tabindex="-1" role="dialog">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Student</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body row">
+                    <div class="form-group col-4">
+                        <label>Student Name</label>
+                        <input type="text" class="form-control form-control-sm" v-model="current_student.name">
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Father's Name</label>
+                        <input type="text" class="form-control form-control-sm" v-model="current_student.father_name">
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Batch</label>
+                        <input type="text" class="form-control form-control-sm" v-model="current_student.batch">
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Email</label>
+                        <input type="email" class="form-control form-control-sm" v-model="current_student.email">
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Phone</label>
+                        <input type="number" class="form-control form-control-sm" v-model="current_student.phone">
+                    </div>
+                    <div class="form-group col-4">
+                        <label>NRC</label>
+                        <input type="text" class="form-control form-control-sm" v-model="current_student.nrc">
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Address</label>
+                        <input type="text" class="form-control form-control-sm" v-model="current_student.address">
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Township</label>
+                        <select v-model="current_student.township_id" class="custom-select custom-select-sm">
+                            <option 
+                            v-for="township in townships"
+                            :key="township.id"
+                            :value="township.id"
+                            :selected="township.id == current_student.township_id">
+                                {{township.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Gender</label>
+                        <select v-model="current_student.gender" class="custom-select custom-select-sm">
+                            <option
+                            v-for="gender in genders"
+                            :key="gender.key"
+                            :value="gender"
+                            :selected="gender == current_student.gender">
+                                {{gender}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Religion</label>
+                        <select v-model="current_student.religion" class="custom-select custom-select-sm">
+                            <option
+                            v-for="religion in religions"
+                            :key="religion.key"
+                            :value="religion"
+                            :selected="religion == current_student.religion">
+                                {{religion}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Date of Birth</label>
+                        <date-picker v-model="current_student.dob" :format="date_format" :bootstrapStyling="true"></date-picker>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Skills</label>
+                        <v-select
+                        :options="skills"
+                        label="name"
+                        multiple
+                        v-model="current_student.skills"
+                        :reduce="skill => skill.name"></v-select>
+                    </div>
+                    <div class="form-group">
+                        <label>Languages</label>
+                        <table class="table table-borderless">
+                            <tr v-for="language in languages" :key="language.id">
+                                <td v-if="current_student.languages">
+                                    <input type="checkbox" :checked="current_student.languages.some(skill => skill.id == language.id)">
+                                    {{language.name}}
+                                </td>
+                                <td>
+                                    <span v-if="current_student.languages">
+                                        <input type="text" class="form-control form-control-sm" :value="current_student.languages.find(skill => skill.id == language.id)">
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" @click="updateStudent">Update</button>
+                </div>
+            </div>
+          </div>
+        </div>
     </div>
 </template>
 <script>
@@ -191,7 +302,7 @@ export default {
                 jobs: '',
                 salary: 0,
                 townships: ''
-            }
+            },
         }
     },
     
@@ -312,11 +423,24 @@ export default {
             })
         },
 
-        editStudent(student){},
+        showEditStudent(student){
+            this.current_student = Object.assign({}, this.current_student, student);
+            $('#edit_student_modal').modal('show');
+        },
 
-        updateStudent(){},
+        updateStudent(){
+            this.$store.dispatch('students/updateStudent', this.current_student)
+            .then(res => {
+                if (res) {
+                    this.current_student = {};
+                    $('#edit_student_modal').modal('hide');
+                }
+            })
+        },
 
-        deleteStudent(student){}
+        deleteStudent(student){
+            this.$store.dispatch('students/deleteStudent', student);
+        }
     }
 }
 </script>
