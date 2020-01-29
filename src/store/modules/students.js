@@ -65,8 +65,8 @@ export default {
                 })
         },
 
-        getStudentsByJob(state, job_id) {
-            this._vm.$http.get(api.students_by_job_URL + '/' + job_id)
+        getStudentsByJob(state, data) {
+            this._vm.$http.get(api.job_students_URL(data.job_id) + '?township_id=' + data.township_id)
                 .then(response => {
                     state.commit('students_by_job', response.data);
                 })

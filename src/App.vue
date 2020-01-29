@@ -22,4 +22,8 @@ input[type=number] {
   -moz-appearance:textfield;
 }
 
+a {
+    cursor: pointer;
+}
+
 </style>

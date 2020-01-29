@@ -74,6 +74,7 @@ export default {
                 assigned_time: '',
             },
             date_format: 'dd-MMM-yyyy',
+            my_jobs: ''
         }
     },
 
@@ -90,13 +91,21 @@ export default {
     methods: {
 
         getJobsByCompany(){
+            this.interview.job_id = '';
+            this.interview.student_id = '';
             let company_id = this.interview.company_id;
-            this.$store.dispatch('companies/getJobsByCompany', company_id)
+            this.$store.dispatch('companies/getJobsByCompany', company_id);
         },
 
         getStudentsByJob(){
             let job_id = this.interview.job_id;
-            this.$store.dispatch('students/getStudentsByJob', job_id);
+            let job = this.company_jobs.find(job => job.id == job_id);
+            
+            let data = {
+                job_id: this.interview.job_id,
+                township_id: job.township_id
+            };
+            this.$store.dispatch('students/getStudentsByJob', data);
         },
 
         addInterview(){

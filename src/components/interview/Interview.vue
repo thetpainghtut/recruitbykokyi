@@ -6,57 +6,23 @@
                     <span class="sr-only">Loading...</span>
                 </div>
             </div>
-            <div v-else-if="status == 'success'">
-                <div class="row">
-                    <div class="col-12 text-center mb-2">
-                        <button class="btn btn-info btn-sm mt-2" @click="new_interview = !new_interview">
-                            <span v-if="new_interview">Done</span>
-                            <span v-else>Add New</span>
-                        </button>
-                    </div>
-                    <div v-if="new_interview" class="col-lg-12 bg-light mx-auto">
-                        <add-interview
-                        :companies="companies"
-                        :jobs="jobs"
-                        :students="students"></add-interview>
-                    </div>
-                </div>
-                <div class="row p-3">
-                    <div class="col-md-12">
-                        <table class="table table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Company</th>
-                                    <th>Position</th>
-                                    <th>Student</th>
-                                    <th>Interview Date</th>
-                                    <th>Interview Time</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(interview, index) in interviews.data" :key="interview.key">
-                                    <td>{{index+1}}</td>
-                                    <td>{{interview.company.name}}</td>
-                                    <td>{{interview.job.title}}</td>
-                                    <td>{{interview.student.name}}</td>
-                                    <td>{{interview.assigned_date | date}}</td>
-                                    <td>{{interview.assigned_time | time}}</td>
-                                    <td>{{interview.status}}</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-warning mx-2" @click="editInterview(interview)" data-toggle="tooltip" data-placement="top" title="Edit Interview"><i class="far fa-edit fa-sm"></i></button>
-                                        <button class="btn btn-outline-danger btn-sm" @click="deleteInterview(interview)" data-toggle="tooltip" data-placement="top" title="Remove Interview"><i class="far fa-trash-alt fa-sm"></i></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <pagination :data="interviews" @pagination-change-page="getInterviews"></pagination>
-                    </div>
-                </div>
+            <div v-else-if="status == 'success'" class="mt-2">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link" @click="active_tab = 1" :class="active_tab == 1?'current': ''">Pending</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" @click="active_tab = 2" :class="active_tab == 2?'current': ''">Confirmed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" @click="active_tab = 3" :class="active_tab == 3?'current': ''">Rejected</a>
+                    </li>
+                </ul>
             </div>
             <div v-else class="text-center">{{status}}</div>
+        </div>
+        <div v-if="active_tab == 1">
+            <interview-pending></interview-pending>
         </div>
         <div class="modal" id="edit_interview_modal" tabindex="-1" role="dialog">
           <div class="modal-dialog" role="document">
@@ -76,11 +42,11 @@
                     <label>Job Title</label>
                     <input v-if="check" type="text" class="form-control form-control-sm" :value="current_interview.job.title" disabled>
                 </div>
-                <div class="form-group">
+                <div class="form-group" v-if="job_students">
                     <label>Student</label>
                     <select class="custom-select custom-select-sm" v-model="current_interview.student_id">
                         <option
-                        v-for="student in students"
+                        v-for="student in job_students"
                         :key="student.id"
                         :value="student.id"
                         :selected="current_interview.student_id == student.id">
@@ -118,10 +84,11 @@
     </div>
 </template>
 <script>
-    import AddInterview from './AddInterview'
+    // import AddInterview from './AddInterview';
+    import InterviewPending from './Interviews';
 
     export default {
-        components: { AddInterview },
+        components: {InterviewPending },
 
         data(){
             return {
@@ -129,6 +96,7 @@
                 current_interview: {},
                 statuses: ['pending', 'confirmed', 'rejected'],
                 date_format: 'dd MMM yyyy',
+                active_tab: 1
             }
         },
 
@@ -155,6 +123,10 @@
 
             check(){
                 return $.isEmptyObject(this.current_interview)?false:true;
+            },
+
+            job_students(){
+                return this.$store.getters['students/students_by_job'];
             }
         },
 
@@ -204,8 +176,10 @@
             editInterview(interview){
 
                 this.current_interview = Object.assign({},this.current_interview, interview);
-
-                $('#edit_interview_modal').modal('show');
+                this.$store.dispatch('students/getStudentsByJob', this.current_interview.job_id)
+                .then(() => {
+                    $('#edit_interview_modal').modal('show');
+                });
             },
 
             deleteInterview(interview){
@@ -219,3 +193,8 @@
         }
     }
 </script>
+<style scoped>
+    .current {
+        background: #c2c2f0;
+    }
+</style>

@@ -7,10 +7,11 @@ let api = {
     all_jobs_URL: '/v1/admin/jobs/all',
     all_students_URL: '/v1/admin/students/all',
     students_URL: '/v1/admin/students',
-    students_by_job_URL: '/v1/admin/students/job/',
+    // students_by_job_URL: '/v1/admin/job/job/',
     interviews_URL: '/v1/admin/interviews',
     company_jobs_URL: (id) => `/v1/admin/company/${id}/jobs`,
     student_jobs_URL: (id) => `/v1/admin/students/${id}/jobs`,
+    job_students_URL: (id) => `/v1/admin/jobs/${id}/students`,
     skills_URL: '/v1/admin/skills',
     languages_URL: '/v1/admin/languages'
 };

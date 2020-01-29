@@ -19,18 +19,21 @@
                     </div>
                 </div>
                 <div class="row p-3">
-                    <div class="col-lg-12 mx-auto">
+                    <div class="col-3 mx-auto">
+                        <input type="text" placeholder="Search company..." class="form-control form-control-sm m-2" v-model="search">
+                    </div>
+                    <div class="col-12 mx-auto">
                         <table class="table table-striped table-sm">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Name</th>
-                                    <th class="col-lg-8">Offered Jobs</th>
-                                    <th>Actions</th>
+                                    <th style="width: 5%;">No</th>
+                                    <th style="width: 20%;">Name</th>
+                                    <th style="width: 60%;">Offered Jobs</th>
+                                    <th style="width: 15%;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(company, index) in companies.data" :key="company.id">
+                                <tr v-for="(company, index) in filterCompanies" :key="company.id">
                                     <td>{{getOverallIndex(index)}}</td>
                                     <td>{{company.name}}</td>
                                     <td>
@@ -109,6 +112,24 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Working Hours</label>
+                                <div class="form-inline">
+                                    <input type="time" class="form-control form-control-sm col-5" v-model="job.start_time">
+                                    <label class="col-2"> to </label>
+                                    <input type="time" class="form-control form-control-sm col-5" v-model="job.end_time">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Off Days</label>
+                                <input type="text" class="form-control form-control-sm" v-model="job.offdays">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group">
                                 <label>Job Description</label>
@@ -127,7 +148,7 @@
         </div>
 
         <div class="modal" id="edit_job_modal" tabindex="-1" role="dialog" ref="vuemodal">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Edit Jobs of Company</h5>
@@ -146,21 +167,35 @@
                                 <p>{{current_job.title}}</p>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Salary</label>
-                            <input type="number" v-model="current_job.salary" class="form-control form-control-sm">
-                        </div>
-                        <div class="form-group">
-                            <label>Working Location</label>
-                            <v-select
-                            :options="townships"
-                            label="name"
-                            v-model="current_job.township_id"
-                            :reduce="township => township.id"></v-select>
-                        </div>
-                        <div class="form-group">
-                            <label>Job Description</label>
-                            <textarea v-model="current_job.desc" class="form-control form-control-sm" rows="5" style="resize: none;"></textarea>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label>Salary</label>
+                                <input type="number" v-model="current_job.salary" class="form-control form-control-sm">
+                            </div>
+                            <div class="form-group col-6">
+                                <label>Working Location</label>
+                                <v-select
+                                :options="townships"
+                                label="name"
+                                v-model="current_job.township_id"
+                                :reduce="township => township.id"></v-select>
+                            </div>
+                            <div class="form-group col-6">
+                                <label>Working Hours</label>
+                                <div class="form-inline">
+                                    <input type="time" class="form-control form-control-sm col-5" v-model="current_job.start_time">
+                                    <label class="col-2"> to </label>
+                                    <input type="time" class="form-control form-control-sm col-5" v-model="current_job.end_time">
+                                </div>
+                            </div>
+                            <div class="form-group col-6">
+                                <label>Off Days</label>
+                                <input type="text" class="form-control form-control-sm" v-model="current_job.offdays">
+                            </div>
+                            <div class="form-group col-12">
+                                <label>Job Description</label>
+                                <textarea v-model="current_job.desc" class="form-control form-control-sm" rows="5" style="resize: none;"></textarea>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -318,9 +353,13 @@ export default {
                 salary: 0,
                 township_id: '',
                 desc: '',
-                company_id: ''
+                company_id: '',
+                start_time: '',
+                end_time: '',
+                offdays:''
             },
             edit_salary: false,
+            search: ''
         }
     },
 
@@ -344,6 +383,10 @@ export default {
 
         company_jobs(){
             return this.$store.getters['companies/company_jobs'];
+        },
+
+        filterCompanies(){
+            return this.companies.data.filter(company => company.name.toLowerCase().includes(this.search.toLowerCase()));
         }
     },
 
@@ -361,7 +404,7 @@ export default {
 
     methods: {
         getOverallIndex(index){
-          return (this.companies.meta.current_page*15)-15 + index + 1;
+          return (this.companies.meta.current_page*25)-25 + index + 1;
         },
 
         getAllTownships(){

@@ -28,11 +28,11 @@
                         <table class="table table-striped table-sm">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Name</th>
-                                    <th class="col-lg-6">Required Jobs</th>
-                                    <th class="col-lg-2">Expected Salary</th>
-                                    <th>Actions</th>
+                                    <th style="width: 5%;">No</th>
+                                    <th style="width: 15%;">Name</th>
+                                    <th style="width: 55%;">Required Jobs</th>
+                                    <th style="width: 10%;">Expected Salary</th>
+                                    <th style="width: 20%;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
